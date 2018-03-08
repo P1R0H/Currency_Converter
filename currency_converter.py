@@ -9,8 +9,8 @@ get forex:
 % pip3 install forex-python
 
 usage: currency_converter.py [-h] [-i [INFO]] [--amount AMOUNT]
-                             [--output_currency OUT_CURR] [--file PATH]
-                             --input_currency IN_CURR
+                             [--output_currency OUT_CURR]
+                             [--input_currency IN_CURR] [--file PATH]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -21,11 +21,9 @@ optional arguments:
   --output_currency OUT_CURR
                         output currency symbol or code, all known currencies
                         if not present
-  --file PATH           output file path
-
-required named arguments:
   --input_currency IN_CURR
                         output currency symbol or code
+  --file PATH           output file path
 
 
 created by Andrej Dravecky
@@ -45,41 +43,42 @@ class InfoFlag(Exception):
 
 # Dictionary of symbols and matching currencies, conflicting values use alternative symbols
 DICT = {
-        "$": "USD",
-        "kr": "NOK",
-        "¥": "CNY",
-        "₪": "ILS",
-        "₹": "INR",
-        "R$": "BRL",
-        "Kr.": "DKK",
-        "₺": "TRY",
-        "L": "RON",
-        "zł": "PLN",
-        "฿": "THB",
-        "Kč": "CZK",
-        "RM": "MYR",
-        "Fr.": "CHF",
-        "€": "EUR",
-        "S$": "SGD",
-        "R": "ZAR",
-        "£": "GBP",
-        "₽": "RUB",
-        "Rp": "IDR",
-        "₩": "KRW",
-        "kn": "HRK",
-        "Ft": "HUF",
-        "₱": "PHP",
+    "$"  : "USD",
+    "kr" : "NOK",
+    "¥"  : "CNY",
+    "₪"  : "ILS",
+    "₹"  : "INR",
+    "R$" : "BRL",
+    "Kr.": "DKK",
+    "₺"  : "TRY",
+    "L"  : "RON",
+    "zł" : "PLN",
+    "฿"  : "THB",
+    "Kč" : "CZK",
+    "RM" : "MYR",
+    "Fr.": "CHF",
+    "€"  : "EUR",
+    "S$" : "SGD",
+    "R"  : "ZAR",
+    "£"  : "GBP",
+    "₽"  : "RUB",
+    "Rp" : "IDR",
+    "₩"  : "KRW",
+    "kn" : "HRK",
+    "Ft" : "HUF",
+    "₱"  : "PHP",
 
-        # alternative symbols
+    # alternative symbols
 
-        "A$": "AUD",
-        "M$": "MXN",
-        "C$": "CAD",
-        "NZ$": "NZD",
-        "HK$": "HKD",
-        "JP¥": "JPY",
-        "Ikr": "ISK",
-        "Skr": "SEK"
+    "A$" : "AUD",
+    "M$" : "MXN",
+    "C$" : "CAD",
+    "NZ$": "NZD",
+    "HK$": "HKD",
+    "JP¥": "JPY",
+    "Ikr": "ISK",
+    "Skr": "SEK"
+
     }
 
 
@@ -89,9 +88,15 @@ def print_known_currencies():
 
     """
 
+    rev_dict = {v: k for k, v in DICT.items()}
+
     print("List of known currencies:", end="\n\n")
+    print("CODE   SYMBOL   CURRENCY", end="\n\n")
+    c = CurrencyCodes()
     for code in sorted(DICT.values()):
-        print("'{}' - {}".format(code, CurrencyCodes().get_currency_name(code)), end="\n")
+        of = " " * (4 - len(rev_dict[code]))
+        print("'{}'  [{}]".format(code, rev_dict[code]), end=of)
+        print("- {}".format(c.get_currency_name(code)), end="\n")
 
 
 def prepare_parser():
@@ -110,11 +115,10 @@ def prepare_parser():
                         help="amount of input currency to be converted, 1.0 if not present")
     parser.add_argument("--output_currency", dest="out_curr",
                         help="output currency symbol or code, all known currencies if not present")
+    parser.add_argument("--input_currency", type=str, dest="in_curr",
+                        help="output currency symbol or code")
     parser.add_argument("--file", type=str, dest="path", help="output file path")
 
-    required_named = parser.add_argument_group('required named arguments')
-    required_named.add_argument("--input_currency", type=str, dest="in_curr", required=True,
-                                help="output currency symbol or code")
     return parser
 
 
@@ -149,6 +153,8 @@ def handler(args):
         raise InfoFlag
 
     input_currency = get_currency(args.in_curr)
+    if input_currency is None:
+        raise ValueError("--input_currency parameter has to be present")
     output_currency = get_currency(args.out_curr)
 
     # creating structured data for JSON structure

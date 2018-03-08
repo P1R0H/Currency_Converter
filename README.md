@@ -11,8 +11,8 @@ get forex:
 % pip3 install forex-python
 
 usage: currency_converter.py [-h] [-i [INFO]] [--amount AMOUNT]
-                             [--output_currency OUT_CURR] [--file PATH]
-                             --input_currency IN_CURR
+                             [--output_currency OUT_CURR]
+                             [--input_currency IN_CURR] [--file PATH]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -23,11 +23,9 @@ optional arguments:
   --output_currency OUT_CURR
                         output currency symbol or code, all known currencies
                         if not present
-  --file PATH           output file path
-
-required named arguments:
   --input_currency IN_CURR
                         output currency symbol or code
+  --file PATH           output file path
 
 ```
 
@@ -52,37 +50,39 @@ usage:
 ```
 List of known currencies:
 
-'AUD' - Australian dollar
-'BRL' - Brazilian real
-'CAD' - Canadian dollar
-'CHF' - Swiss franc
-'CNY' - Chinese/Yuan renminbi
-'CZK' - Czech koruna
-'DKK' - Danish krone
-'EUR' - European Euro
-'GBP' - British pound
-'HKD' - Hong Kong dollar
-'HRK' - Croatian kuna
-'HUF' - Hungarian forint
-'IDR' - Indonesian rupiah
-'ILS' - Israeli new sheqel
-'INR' - Indian rupee
-'ISK' - Icelandic króna
-'JPY' - Japanese yen
-'KRW' - South Korean won
-'MXN' - Mexican peso
-'MYR' - Malaysian ringgit
-'NOK' - Norwegian krone
-'NZD' - New Zealand dollar
-'PHP' - Philippine peso
-'PLN' - Polish zloty
-'RON' - Romanian leu
-'RUB' - Russian ruble
-'SEK' - Swedish krona
-'SGD' - Singapore dollar
-'THB' - Thai baht
-'TRY' - Turkish new lira
-'USD' - United States dollar
-'ZAR' - South African rand
+CODE   SYMBOL   CURRENCY
+
+'AUD'  [A$]  - Australian dollar
+'BRL'  [R$]  - Brazilian real
+'CAD'  [C$]  - Canadian dollar
+'CHF'  [Fr.] - Swiss franc
+'CNY'  [¥]   - Chinese/Yuan renminbi
+'CZK'  [Kč]  - Czech koruna
+'DKK'  [Kr.] - Danish krone
+'EUR'  [€]   - European Euro
+'GBP'  [£]   - British pound
+'HKD'  [HK$] - Hong Kong dollar
+'HRK'  [kn]  - Croatian kuna
+'HUF'  [Ft]  - Hungarian forint
+'IDR'  [Rp]  - Indonesian rupiah
+'ILS'  [₪]   - Israeli new sheqel
+'INR'  [₹]   - Indian rupee
+'ISK'  [Ikr] - Icelandic króna
+'JPY'  [JP¥] - Japanese yen
+'KRW'  [₩]   - South Korean won
+'MXN'  [M$]  - Mexican peso
+'MYR'  [RM]  - Malaysian ringgit
+'NOK'  [kr]  - Norwegian krone
+'NZD'  [NZ$] - New Zealand dollar
+'PHP'  [₱]   - Philippine peso
+'PLN'  [zł]  - Polish zloty
+'RON'  [L]   - Romanian leu
+'RUB'  [₽]   - Russian ruble
+'SEK'  [Skr] - Swedish krona
+'SGD'  [S$]  - Singapore dollar
+'THB'  [฿]   - Thai baht
+'TRY'  [₺]   - Turkish new lira
+'USD'  [$]   - United States dollar
+'ZAR'  [R]   - South African rand
 
 ```
