@@ -1,5 +1,5 @@
 """
-Currency converter CLI
+Currency Converter CLI
 python3.5
 
 current exchange rates are obtained by forex-python module:
@@ -8,18 +8,24 @@ https://github.com/MicroPyramid/forex-python
 get forex:
 % pip3 install forex-python
 
-usage: currency_converter.py [-h] [--amount AMOUNT]
+usage: currency_converter.py [-h] [-i [INFO]] [--amount AMOUNT]
                              [--output_currency OUT_CURR] [--file PATH]
                              --input_currency IN_CURR
 
 optional arguments:
   -h, --help            show this help message and exit
-  --amount AMOUNT
+  -i [INFO], --info [INFO]
+                        prints out known currencies
+  --amount AMOUNT       amount of input currency to be converted, 1.0 if not
+                        present
   --output_currency OUT_CURR
-  --file PATH
+                        output currency symbol or code, all known currencies
+                        if not present
+  --file PATH           output file path
 
 required named arguments:
   --input_currency IN_CURR
+                        output currency symbol or code
 
 
 created by Andrej Dravecky
@@ -29,40 +35,46 @@ created by Andrej Dravecky
 
 import argparse
 import json
-from forex_python.converter import CurrencyRates
+from forex_python.converter import CurrencyRates, CurrencyCodes
+
+
+# InfoFlag exception, raised when info argument present
+class InfoFlag(Exception):
+    pass
+
 
 # Dictionary of symbols and matching currencies, conflicting values use alternative symbols
-SYMBOLS = {
-        "$"  : "USD",
-        "kr" : "NOK",
-        "¥"  : "CNY",
-        "₪"  : "ILS",
-        "₹"  : "INR",
-        "R$" : "BRL",
+DICT = {
+        "$": "USD",
+        "kr": "NOK",
+        "¥": "CNY",
+        "₪": "ILS",
+        "₹": "INR",
+        "R$": "BRL",
         "Kr.": "DKK",
-        "₺"  : "TRY",
-        "L"  : "RON",
-        "zł" : "PLN",
-        "฿"  : "THB",
-        "Kč" : "CZK",
-        "RM" : "MYR",
+        "₺": "TRY",
+        "L": "RON",
+        "zł": "PLN",
+        "฿": "THB",
+        "Kč": "CZK",
+        "RM": "MYR",
         "Fr.": "CHF",
-        "€"  : "EUR",
-        "S$" : "SGD",
-        "R"  : "ZAR",
-        "£"  : "GBP",
-        "₽"  : "RUB",
-        "Rp" : "IDR",
-        "₩"  : "KRW",
-        "kn" : "HRK",
-        "Ft" : "HUF",
-        "₱"  : "PHP",
+        "€": "EUR",
+        "S$": "SGD",
+        "R": "ZAR",
+        "£": "GBP",
+        "₽": "RUB",
+        "Rp": "IDR",
+        "₩": "KRW",
+        "kn": "HRK",
+        "Ft": "HUF",
+        "₱": "PHP",
 
         # alternative symbols
 
-        "A$" : "AUD",
-        "M$" : "MXN",
-        "C$" : "CAD",
+        "A$": "AUD",
+        "M$": "MXN",
+        "C$": "CAD",
         "NZ$": "NZD",
         "HK$": "HKD",
         "JP¥": "JPY",
@@ -71,19 +83,38 @@ SYMBOLS = {
     }
 
 
+def print_known_currencies():
+    """
+    currency information print
+
+    """
+
+    print("List of known currencies:", end="\n\n")
+    for code in sorted(DICT.values()):
+        print("'{}' - {}".format(code, CurrencyCodes().get_currency_name(code)), end="\n")
+
+
 def prepare_parser():
     """
     prepares argument parser for main function
 
     :return: parser as ArgumentParser object
-    """
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--amount", type=float, default=1.0, dest="amount")
-    parser.add_argument("--output_currency", dest="out_curr")
-    parser.add_argument("--file", type= str, dest="path")
-    required_named = parser.add_argument_group('required named arguments')
-    required_named.add_argument("--input_currency", type=str, dest="in_curr", required=True)
 
+    """
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-i", "--info", dest="info", const=True, default=False,
+                        nargs='?', help="prints out known currencies")
+    parser.add_argument("--amount", type=float, default=1.0, dest="amount",
+                        help="amount of input currency to be converted, 1.0 if not present")
+    parser.add_argument("--output_currency", dest="out_curr",
+                        help="output currency symbol or code, all known currencies if not present")
+    parser.add_argument("--file", type=str, dest="path", help="output file path")
+
+    required_named = parser.add_argument_group('required named arguments')
+    required_named.add_argument("--input_currency", type=str, dest="in_curr", required=True,
+                                help="output currency symbol or code")
     return parser
 
 
@@ -93,13 +124,15 @@ def get_currency(arg):
 
     :param arg: currency code or symbol
     :return: currency 3-letter code as string
-     """
+
+    """
+
     if arg is None:
         return None
-    if arg in SYMBOLS.values():
+    if arg in DICT.values():
         return arg
-    if arg in SYMBOLS.keys():
-        return SYMBOLS[arg]
+    if arg in DICT.keys():
+        return DICT[arg]
     raise ValueError("Currency '{}' not recognized".format(arg))
 
 
@@ -109,7 +142,12 @@ def handler(args):
 
     :param args: parsed arguments
     :return: json structure dump
+
     """
+
+    if args.info:
+        raise InfoFlag
+
     input_currency = get_currency(args.in_curr)
     output_currency = get_currency(args.out_curr)
 
@@ -131,14 +169,19 @@ def main():
     main function calls parser, handler and handles output
 
     """
+
     try:
         args = prepare_parser().parse_args()
         json_dump = handler(args)
+
         open(args.path, 'w').write(json_dump) if args.path is not None else print(json_dump)
 
     # catching unrecognized currency exception
     except ValueError as v:
         print(v)
+    # catching InfoFlag for currency info print
+    except InfoFlag:
+        print_known_currencies()
 
 
 if __name__ == "__main__":

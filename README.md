@@ -10,18 +10,25 @@ https://github.com/MicroPyramid/forex-python
 get forex:
 % pip3 install forex-python
 
-usage: currency_converter.py [-h] [--amount AMOUNT]
+usage: currency_converter.py [-h] [-i [INFO]] [--amount AMOUNT]
                              [--output_currency OUT_CURR] [--file PATH]
                              --input_currency IN_CURR
 
 optional arguments:
   -h, --help            show this help message and exit
-  --amount AMOUNT
+  -i [INFO], --info [INFO]
+                        prints out known currencies
+  --amount AMOUNT       amount of input currency to be converted, 1.0 if not
+                        present
   --output_currency OUT_CURR
-  --file PATH
+                        output currency symbol or code, all known currencies
+                        if not present
+  --file PATH           output file path
 
 required named arguments:
   --input_currency IN_CURR
+                        output currency symbol or code
+
 ```
 
 ## Web API
@@ -43,42 +50,39 @@ usage:
 
 ## Symbols and Currensies
 ```
-SYMBOLS = {
-        "$"  : "USD",
-        "kr" : "NOK",
-        "¥"  : "CNY",
-        "₪"  : "ILS",
-        "₹"  : "INR",
-        "R$" : "BRL",
-        "Kr.": "DKK",
-        "₺"  : "TRY",
-        "L"  : "RON",
-        "zł" : "PLN",
-        "฿"  : "THB",
-        "Kč" : "CZK",
-        "RM" : "MYR",
-        "Fr.": "CHF",
-        "€"  : "EUR",
-        "S$" : "SGD",
-        "R"  : "ZAR",
-        "£"  : "GBP",
-        "₽"  : "RUB",
-        "Rp" : "IDR",
-        "₩"  : "KRW",
-        "kn" : "HRK",
-        "Ft" : "HUF",
-        "₱"  : "PHP",
+List of known currencies:
 
-        # alternative symbols
-
-        "A$" : "AUD",
-        "M$" : "MXN",
-        "C$" : "CAD",
-        "NZ$": "NZD",
-        "HK$": "HKD",
-        "JP¥": "JPY",
-        "Ikr": "ISK",
-        "Skr": "SEK"
-    }
+'AUD' - Australian dollar
+'BRL' - Brazilian real
+'CAD' - Canadian dollar
+'CHF' - Swiss franc
+'CNY' - Chinese/Yuan renminbi
+'CZK' - Czech koruna
+'DKK' - Danish krone
+'EUR' - European Euro
+'GBP' - British pound
+'HKD' - Hong Kong dollar
+'HRK' - Croatian kuna
+'HUF' - Hungarian forint
+'IDR' - Indonesian rupiah
+'ILS' - Israeli new sheqel
+'INR' - Indian rupee
+'ISK' - Icelandic króna
+'JPY' - Japanese yen
+'KRW' - South Korean won
+'MXN' - Mexican peso
+'MYR' - Malaysian ringgit
+'NOK' - Norwegian krone
+'NZD' - New Zealand dollar
+'PHP' - Philippine peso
+'PLN' - Polish zloty
+'RON' - Romanian leu
+'RUB' - Russian ruble
+'SEK' - Swedish krona
+'SGD' - Singapore dollar
+'THB' - Thai baht
+'TRY' - Turkish new lira
+'USD' - United States dollar
+'ZAR' - South African rand
 
 ```
