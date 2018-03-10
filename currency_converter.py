@@ -149,7 +149,11 @@ class CurrencyConverter:
         :param incurr:  input currency symbol or 3 letter code
         :param outcurr:  output currency symbol or 3 letter code, defaults to None -> pick all currencies
 
+<<<<<<< Updated upstream
         :return: structured JSON data
+=======
+        :return: JSON structured data as JSON dump string
+>>>>>>> Stashed changes
 
         """
 
@@ -206,7 +210,7 @@ def main():
 
     # catching unrecognized currency exception
     except ValueError as v:
-        print("error: ".join(str(v)))
+        print(v)
 
     # catching RateNotAvailable if Forex cannot get rates for whatever reason
     except RatesNotAvailableError as r:
