@@ -149,11 +149,7 @@ class CurrencyConverter:
         :param incurr:  input currency symbol or 3 letter code
         :param outcurr:  output currency symbol or 3 letter code, defaults to None -> pick all currencies
 
-<<<<<<< Updated upstream
-        :return: structured JSON data
-=======
         :return: JSON structured data as JSON dump string
->>>>>>> Stashed changes
 
         """
 
@@ -195,7 +191,7 @@ def prepare_parser():
 
 def main():
     """
-    main function calls parser, handler and handles output
+    main function calls parser, calls CurrencyConverter class methods and handles output
 
     """
 
@@ -214,7 +210,7 @@ def main():
 
     # catching RateNotAvailable if Forex cannot get rates for whatever reason
     except RatesNotAvailableError as r:
-        print("service unavailable: ".join(str(r)))
+        print(r)
 
 
 if __name__ == "__main__":
