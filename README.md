@@ -29,6 +29,60 @@ optional arguments:
 
 ```
 
+### CurrencyConverter class
+CurrencyConverter class can be imported from currency_converter module.
+
+example:
+```
+from currency_converter import CurrencyConverter
+from time import strftime, gmtime
+import time
+import json
+
+
+def print_btc(timer, inv):
+    converter = CurrencyConverter()
+    print("BTC to USD rates", end="\n")
+    while True:
+        wtf = json.loads(converter.convert(1, "BTC", "USD"))
+        print("{}: {}".format(strftime("%Y-%m-%d %H:%M:%S", gmtime()), wtf["output"]["USD"]), end="\n")
+        time.sleep(inv)
+        if timer < 0:
+            return
+        timer = timer - inv
+
+
+print_btc(600, 30)
+
+```
+output:
+```
+BTC to USD rates
+2018-03-10 22:42:00: 8866.7125
+2018-03-10 22:42:31: 8852.5413
+2018-03-10 22:43:01: 8852.5413
+2018-03-10 22:43:31: 8852.5413
+2018-03-10 22:44:01: 8849.7563
+2018-03-10 22:44:32: 8848.0263
+2018-03-10 22:45:02: 8848.0263
+2018-03-10 22:45:32: 8848.0263
+2018-03-10 22:46:02: 8853.9138
+2018-03-10 22:46:33: 8840.2663
+2018-03-10 22:47:03: 8840.2663
+2018-03-10 22:47:33: 8826.7575
+2018-03-10 22:48:03: 8826.7575
+2018-03-10 22:48:33: 8819.42
+2018-03-10 22:49:03: 8819.42
+2018-03-10 22:49:34: 8819.42
+2018-03-10 22:50:04: 8820.415
+2018-03-10 22:50:34: 8826.2525
+2018-03-10 22:51:04: 8826.2525
+2018-03-10 22:51:34: 8826.2525
+2018-03-10 22:52:04: 8825.4288
+2018-03-10 22:52:35: 8826.9013
+
+```
+
 ## Web API
 ```
 using Flask webdevelopment framework:
@@ -46,7 +100,7 @@ usage:
 [CURRENCY] - currency symbol or 3 letter code
 ```
 
-## Symbols and Currensies
+## Symbols and Currencies
 ```
 List of known currencies:
 
