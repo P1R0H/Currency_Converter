@@ -33,7 +33,8 @@ created by Andrej Dravecky
 
 import argparse
 import json
-from forex_python.converter import CurrencyRates, CurrencyCodes
+from forex_python.converter import CurrencyRates, CurrencyCodes, RatesNotAvailableError
+from forex_python.bitcoin import BtcConverter
 
 
 # InfoFlag exception, raised when info argument present
@@ -67,6 +68,7 @@ DICT = {
     "kn" : "HRK",
     "Ft" : "HUF",
     "₱"  : "PHP",
+    "Ƀ"  : "BTC",
 
     # alternative symbols
 
@@ -96,6 +98,9 @@ def print_known_currencies():
     for code in sorted(DICT.values()):
         of = " " * (4 - len(rev_dict[code]))
         print("'{}'  [{}]".format(code, rev_dict[code]), end=of)
+        if code == "BTC":
+            print("- BitCoin", end="\n")
+            continue
         print("- {}".format(c.get_currency_name(code)), end="\n")
 
 
@@ -140,6 +145,40 @@ def get_currency(arg):
     raise ValueError("Currency '{}' not recognized".format(arg))
 
 
+def build_output(amount, inc, outc):
+    """
+    output data JSON structure builder
+
+    :param amount: amount of currency to be converted
+    :param inc: input currency code
+    :param outc: output currency code (None if all currencies)
+    :return: output JSON structure
+
+    """
+
+    if inc == "BTC":
+        # BTC input handling
+        if outc is not None:
+            return {outc: BtcConverter().convert_btc_to_cur(amount, outc)}
+
+        # BitCoin conversion uses USD rates, amount is changed accordingly
+        amount = BtcConverter().convert_btc_to_cur(amount, "USD")
+        out_data = CurrencyRates().get_rates("USD")
+    else:
+        # classic input handling + add BTC
+        out_data = CurrencyRates().get_rates(inc)
+        out_data["BTC"] = BtcConverter().convert_to_btc(1, inc)
+
+        if outc is not None:
+            out_data = {outc: out_data[outc]}
+
+    # recalculate money amount against all rates (round to 5 places after floating point)
+    for key in out_data.keys():
+        out_data[key] = round(out_data[key] * amount, 5)
+
+    return out_data
+
+
 def handler(args):
     """
     handles currency conversion and JSON structure construction
@@ -159,13 +198,7 @@ def handler(args):
 
     # creating structured data for JSON structure
     in_data = {"amount": args.amount, "currency": input_currency}
-    out_data = CurrencyRates().get_rates(input_currency)
-    if output_currency is not None:
-        out_data = {output_currency: out_data[output_currency]}
-
-    # recalculate money amount against all rates (round to 2 places after floating point)
-    for key in out_data.keys():
-        out_data[key] = round(out_data[key] * args.amount, 2)
+    out_data = build_output(args.amount, input_currency, output_currency)
 
     return json.dumps({"input": in_data, "output": out_data}, sort_keys=True, indent=4)
 
@@ -184,7 +217,12 @@ def main():
 
     # catching unrecognized currency exception
     except ValueError as v:
-        print(v)
+        print("error: ".join(str(v)))
+
+    # catching RateNotAvailable if Forex cannot get rates for whatever reason
+    except RatesNotAvailableError as r:
+        print("service unavailable".join(str(r)))
+
     # catching InfoFlag for currency info print
     except InfoFlag:
         print_known_currencies()

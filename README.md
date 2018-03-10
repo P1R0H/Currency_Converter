@@ -54,6 +54,7 @@ CODE   SYMBOL   CURRENCY
 
 'AUD'  [A$]  - Australian dollar
 'BRL'  [R$]  - Brazilian real
+'BTC'  [Ƀ]   - BitCoin
 'CAD'  [C$]  - Canadian dollar
 'CHF'  [Fr.] - Swiss franc
 'CNY'  [¥]   - Chinese/Yuan renminbi
@@ -84,5 +85,6 @@ CODE   SYMBOL   CURRENCY
 'TRY'  [₺]   - Turkish new lira
 'USD'  [$]   - United States dollar
 'ZAR'  [R]   - South African rand
+
 
 ```
