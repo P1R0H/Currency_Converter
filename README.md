@@ -32,8 +32,8 @@ optional arguments:
 ### CurrencyConverter class
 CurrencyConverter class can be imported from currency_converter module.
 
-example:
-```
+**Example:**
+```python
 from currency_converter import CurrencyConverter
 from time import strftime, gmtime
 import time
@@ -55,7 +55,7 @@ def print_btc(timer, inv):
 print_btc(600, 30)
 
 ```
-output:
+**Output:**
 ```
 BTC to USD rates
 2018-03-10 22:42:00: 8866.7125
